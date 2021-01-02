@@ -1,0 +1,15 @@
+{
+  "name": "dotenv-run-script-advanced-example",
+  "version": "0.1.0",
+  "description": "An example package using the dotenv-run-script package",
+  "private": true,
+  "scripts": {
+    "greet": "echo $GREETING world $GREETING_SUFFIX",
+    "production": "dotenv-run-script .env .env.production --",
+    "development": "dotenv-run-script .env .env.development --",
+    "test": "npm run development greet && npm run production greet"
+  },
+  "devDependencies": {
+    "dotenv-run-script": "file:../.."
+  }
+}
