@@ -2,5 +2,5 @@
 const { run } = require("../dist/index.js");
 const exit_code = run(process.argv);
 if (exit_code) {
-    process.exit(1)
+    process.exit(exit_code)
 }
