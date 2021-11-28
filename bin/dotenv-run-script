@@ -1,4 +1,4 @@
 #!/usr/bin/env node
 const { run } = require("../dist/index.js");
 const statusCode = run(process.argv);
-if (statusCode) process.exit(statusCode);
+process.exit(statusCode);
