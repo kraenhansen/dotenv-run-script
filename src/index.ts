@@ -62,5 +62,5 @@ export function run(argv: string[], encoding: BufferEncoding = "utf8") {
     env = parse(content, env, readonlyKeys);
   }
   // Execute the "npm run-script" command, which forks with the updated process.env
-  cp.spawnSync("npm", ["run-script", ...parsedArgs.rest], { stdio: "inherit", env });
+  return cp.spawnSync("npm", ["run-script", ...parsedArgs.rest], { stdio: "inherit", env }).status;
 }
