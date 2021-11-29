@@ -49,7 +49,11 @@ export function parseArguments(args: string[]) {
   }
 }
 
-export function run(argv: string[], encoding: BufferEncoding = "utf8") {
+/**
+ * Run a script from the package.json (read relative to CWD).
+ * @returns Status code from the child process (null if it was terminated with a signal)
+ */
+export function run(argv: string[], encoding: BufferEncoding = "utf8"): number | null {
   const args = argv.slice(2);
   // Start with a copy of the current process environment
   const readonlyKeys = new Set(Object.keys(process.env));
