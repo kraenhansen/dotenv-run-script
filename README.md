@@ -91,7 +91,7 @@ See the [simple](examples/simple) and [advanced](examples/advanced) examples for
 ## Alternatives you might consider using
 
 - [dotenv's preload script](https://www.npmjs.com/package/dotenv#preload)
-- [dotenv-run-script](https://www.npmjs.com/package/dotenv-run-script) which provide similar, but limited functionality to this package. At the time of writing this, it does not
+- [dotenv-run](https://www.npmjs.com/package/dotenv-run) which provide similar, but limited functionality to this package. At the time of writing this, it does not
   - use dotenv-expand to assign variables from other variables.
   - allow multiple .env files to be loaded in sequence
   - call `npm run` but any executable
