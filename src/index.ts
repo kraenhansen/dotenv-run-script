@@ -1,3 +1,4 @@
+import * as os from 'os';
 import cp from "child_process";
 import fs from "fs";
 import path from "path";
@@ -22,31 +23,40 @@ export function parse(content: string, env: Environment, readonlyKeys: Set<strin
   return combined;
 }
 
+const flags = ['--home'];
+
 export function parseArguments(args: string[]) {
   const dotEnvPaths = [];
+  const rest = [];
+  let startFromHome = !!args.find(arg => arg === flags[0]);
+
   for (const arg of args) {
+	const pathToEnv = startFromHome ?  path.join(os.homedir(), arg) : arg;
     if (arg === "--") {
       break;
-    } else if (fs.existsSync(arg) && fs.statSync(arg).isFile()) {
-      const dotEnvPath = path.resolve(arg);
+    } else if (fs.existsSync(pathToEnv) && fs.statSync(pathToEnv).isFile()) {
+      const dotEnvPath = path.resolve(pathToEnv);
       dotEnvPaths.push(dotEnvPath);
-    } else {
-      break;
+    } else if (flags.includes(arg)) {
+		continue;
+	} else {
+      rest.push(arg);
     }
   }
+
   if (dotEnvPaths.length > 0) {
     return {
       dotEnvPaths,
-      rest: args.slice(dotEnvPaths.length),
+      rest,
     };
   } else if (fs.existsSync(DEFAULT_DOT_ENV) && fs.statSync(DEFAULT_DOT_ENV).isFile()) {
     return {
       dotEnvPaths: [DEFAULT_DOT_ENV],
       rest: args,
     }
-  } else {
-    throw new Error("Failed to load a .env file");
   }
+
+  throw new Error("Failed to load a .env file");
 }
 
 /**

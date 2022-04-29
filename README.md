@@ -78,6 +78,9 @@ PLACE=Localhost
 
 In the example above, two environments are used `.env.production` and `.env.development` in addition to a shared `.env` which includes common variables. Notice how the `PLACE` variable gets overridden.
 
+#### Paths to be viewed from home
+Optionally you can pass a `--home` flag, which would base the path of the provided env files from the home dir, in a platform agnostic maner.
+
 The `greet` script can be invoked with
 
 ```bash
