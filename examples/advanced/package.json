@@ -10,6 +10,6 @@
     "test": "npm run development greet && npm run production greet"
   },
   "devDependencies": {
-    "dotenv-run-script": "file:../.."
+    "dotenv-run-script": "*"
   }
 }

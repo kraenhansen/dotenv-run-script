@@ -3,15 +3,15 @@ import fs from "fs";
 import path from "path";
 import os from "os";
 import dotenv from "dotenv";
-import dotenvExpand from "dotenv-expand";
+import { expand } from "dotenv-expand";
 
 type Environment = { [key: string]: string };
 type ActualExpandConfig = { ignoreProcessEnv?: boolean, parsed: Environment }
 
 const DEFAULT_DOT_ENV = path.resolve(".env");
 
-export function parse(content: string, env: Environment, readonlyKeys: Set<string>, debug = false) {
-  const parsed = dotenv.parse(content, { debug });
+export function parse(content: string, env: Environment, readonlyKeys: Set<string>) {
+  const parsed = dotenv.parse(content);
   const combined = { ...env };
   for (const key in parsed) {
     if (!readonlyKeys.has(key)) {
@@ -19,7 +19,7 @@ export function parse(content: string, env: Environment, readonlyKeys: Set<strin
     }
   }
   // Expand the dotenv (updates to process.env as a side-effect)
-  dotenvExpand({ parsed: combined, ignoreProcessEnv: true } as ActualExpandConfig);
+  expand({ parsed: combined, ignoreProcessEnv: true });
   return combined;
 }
 

@@ -8,6 +8,6 @@
     "test": "dotenv-run-script greet"
   },
   "devDependencies": {
-    "dotenv-run-script": "file:../.."
+    "dotenv-run-script": "*"
   }
 }
