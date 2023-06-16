@@ -1,6 +1,7 @@
-import cp from "child_process";
+import cp, { SpawnSyncOptions } from "child_process";
 import fs from "fs";
 import path from "path";
+import os from "os";
 import dotenv from "dotenv";
 import dotenvExpand from "dotenv-expand";
 
@@ -65,6 +66,10 @@ export function run(argv: string[], encoding: BufferEncoding = "utf8"): number |
     const content = fs.readFileSync(dotEnvPath, { encoding });
     env = parse(content, env, readonlyKeys);
   }
+  let options: SpawnSyncOptions = { stdio: "inherit", env };
+  if (os.platform() === 'win32') {
+    options = { ...options, shell: true };
+  }
   // Execute the "npm run-script" command, which forks with the updated process.env
-  return cp.spawnSync("npm", ["run-script", ...parsedArgs.rest], { stdio: "inherit", env }).status;
+  return cp.spawnSync("npm", ["run-script", ...parsedArgs.rest], options).status;
 }
