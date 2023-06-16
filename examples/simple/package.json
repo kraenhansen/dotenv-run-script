@@ -4,7 +4,7 @@
   "description": "An example package using the dotenv-run-script package",
   "private": true,
   "scripts": {
-    "greet": "echo $GREETING world!",
+    "greet": "node --print '`${process.env.GREETING} World!`'",
     "test": "dotenv-run-script greet"
   },
   "devDependencies": {
