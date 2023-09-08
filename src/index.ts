@@ -67,9 +67,11 @@ export function run(argv: string[], encoding: BufferEncoding = "utf8"): number |
     env = parse(content, env, readonlyKeys);
   }
   let options: SpawnSyncOptions = { stdio: "inherit", env };
+  let cmd = "npm";
   if (os.platform() === 'win32') {
+    cmd += ".cmd";
     options = { ...options, shell: true };
   }
   // Execute the "npm run-script" command, which forks with the updated process.env
-  return cp.spawnSync("npm", ["run-script", ...parsedArgs.rest], options).status;
+  return cp.spawnSync(cmd, ["run-script", ...parsedArgs.rest], options).status;
 }
