@@ -6,7 +6,6 @@ import dotenv from "dotenv";
 import { expand } from "dotenv-expand";
 
 type Environment = { [key: string]: string };
-type ActualExpandConfig = { ignoreProcessEnv?: boolean, parsed: Environment }
 
 const DEFAULT_DOT_ENV = path.resolve(".env");
 
@@ -50,28 +49,40 @@ export function parseArguments(args: string[]) {
   }
 }
 
+function getEnv(dotEnvPaths: string[], encoding: BufferEncoding): Environment {
+  let result: Environment = { ...process.env as Environment };
+  // Start with a copy of the current process environment
+  const readonlyKeys = new Set(Object.keys(process.env));
+  // Parse dotenv file (updating the combined env)
+  for (const dotEnvPath of dotEnvPaths) {
+    const content = fs.readFileSync(dotEnvPath, { encoding });
+    result = parse(content, result, readonlyKeys);
+  }
+  return result;
+}
+
+function getSpawnCommand() {
+  return os.platform() === 'win32' ? "npm.cmd" : "npm";
+}
+
+function getSpawnOptions(dotEnvPaths: string[], encoding: BufferEncoding): SpawnSyncOptions {
+  return {
+    stdio: "inherit",
+    shell: os.platform() === 'win32' ? true : undefined,
+    env: getEnv(dotEnvPaths, encoding),
+  };
+}
+
 /**
  * Run a script from the package.json (read relative to CWD).
  * @returns Status code from the child process (null if it was terminated with a signal)
  */
 export function run(argv: string[], encoding: BufferEncoding = "utf8"): number | null {
   const args = argv.slice(2);
-  // Start with a copy of the current process environment
-  const readonlyKeys = new Set(Object.keys(process.env));
-  let env = { ...process.env as Environment };
   // Parse the arguments getting to the .dot files
   const parsedArgs = parseArguments(args);
-  // Parse dotenv file (updating the combined env)
-  for (const dotEnvPath of parsedArgs.dotEnvPaths) {
-    const content = fs.readFileSync(dotEnvPath, { encoding });
-    env = parse(content, env, readonlyKeys);
-  }
-  let options: SpawnSyncOptions = { stdio: "inherit", env };
-  let cmd = "npm";
-  if (os.platform() === 'win32') {
-    cmd += ".cmd";
-    options = { ...options, shell: true };
-  }
+  const cmd = getSpawnCommand();
+  const options = getSpawnOptions(args, encoding);
   // Execute the "npm run-script" command, which forks with the updated process.env
   return cp.spawnSync(cmd, ["run-script", ...parsedArgs.rest], options).status;
 }
