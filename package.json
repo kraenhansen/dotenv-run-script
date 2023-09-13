@@ -1,6 +1,6 @@
 {
   "name": "dotenv-run-script",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Run NPM scripts in specific environments",
   "bin": "bin/dotenv-run-script",
   "main": "dist/index.js",
