@@ -82,7 +82,7 @@ export function run(argv: string[], encoding: BufferEncoding = "utf8"): number |
   // Parse the arguments getting to the .dot files
   const parsedArgs = parseArguments(args);
   const cmd = getSpawnCommand();
-  const options = getSpawnOptions(args, encoding);
+  const options = getSpawnOptions(parsedArgs.dotEnvPaths, encoding);
   // Execute the "npm run-script" command, which forks with the updated process.env
   return cp.spawnSync(cmd, ["run-script", ...parsedArgs.rest], options).status;
 }
